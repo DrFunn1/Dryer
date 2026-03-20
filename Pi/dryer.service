@@ -1,0 +1,30 @@
+[Unit]
+Description=Dryer Eurorack Percussion Generator
+Documentation=https://github.com/DrFunn1/dryer-eurorack
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/pi/dryer-eurorack
+ExecStart=/usr/local/bin/dryer
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Performance optimizations
+Nice=-10
+IOSchedulingClass=realtime
+IOSchedulingPriority=0
+
+# Resource limits
+LimitNICE=-20
+LimitRTPRIO=99
+
+# Environment variables
+Environment="SDL_VIDEODRIVER=kmsdrm"
+Environment="SDL_RENDER_DRIVER=opengles2"
+
+[Install]
+WantedBy=multi-user.target

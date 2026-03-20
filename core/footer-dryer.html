@@ -1,0 +1,302 @@
+<!-- Footer Section -->
+<footer class="dryer-footer">
+  <div class="footer-content">
+    <div class="footer-title">Beta Testing & Feedback</div>
+    <div class="footer-text">
+      Dryer is in active development. Your feedback helps improve the physics, 
+      UI/UX, and musical capabilities. Found a bug? Have a feature idea?
+    </div>
+    
+    <div class="footer-links">
+      <a href="https://drfunn.com" class="footer-link">← Back to DrFunn</a>
+      <button id="dryer-feedback-button" class="footer-link footer-link-button">Send Feedback</button>
+      <a href="https://github.com/DrFunn1/drfunn-website/issues" class="footer-link" target="_blank">Report Issue on GitHub</a>
+      <a href="README.md" class="footer-link">Documentation</a>
+    </div>
+  </div>
+  
+  <!-- Feedback Form Modal -->
+  <div id="dryer-feedback-modal" class="dryer-modal">
+    <div class="dryer-modal-content">
+      <button id="close-dryer-modal" class="dryer-modal-close">&times;</button>
+      
+      <h2 class="dryer-modal-title">Dryer Feedback</h2>
+      <p class="dryer-modal-subtitle">Help improve this project!</p>
+      
+      <form id="dryer-feedback-form" action="https://formspree.io/f/xovprvvw" method="POST" class="dryer-form">
+        <!-- Hidden field to identify this is from Dryer project -->
+        <input type="hidden" name="project" value="Dryer - Chaotic Percussion Generator">
+        
+        <div class="dryer-form-group">
+          <label for="dryer-name">Name: *</label>
+          <input type="text" id="dryer-name" name="name" required placeholder="Your name" class="dryer-form-input">
+        </div>
+        
+        <div class="dryer-form-group">
+          <label for="dryer-email">Email: *</label>
+          <input type="email" id="dryer-email" name="email" required placeholder="your@email.com" class="dryer-form-input">
+        </div>
+        
+        <div class="dryer-form-group">
+          <label for="dryer-feedback-type">Feedback Type:</label>
+          <select id="dryer-feedback-type" name="feedback_type" class="dryer-form-input">
+            <option value="bug">Bug Report</option>
+            <option value="feature">Feature Request</option>
+            <option value="ui">UI/UX Feedback</option>
+            <option value="physics">Physics Behavior</option>
+            <option value="audio">Audio/MIDI Issue</option>
+            <option value="general">General Feedback</option>
+          </select>
+        </div>
+        
+        <div class="dryer-form-group">
+          <label for="dryer-message">Message: *</label>
+          <textarea id="dryer-message" name="message" required placeholder="Describe your feedback, bug, or feature request..." class="dryer-form-textarea"></textarea>
+        </div>
+        
+        <div id="dryer-form-status" style="display: none; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; font-weight: 500;"></div>
+        
+        <button type="submit" class="dryer-form-submit">Send Feedback</button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+<style>
+/* Footer Styles - Dryer Project */
+.dryer-footer {
+  margin-top: 50px;
+  padding: 40px 20px;
+  text-align: center;
+  border-top: 1px solid #333;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+}
+
+.footer-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.footer-title {
+  color: #00ff88;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.footer-text {
+  color: #888;
+  font-size: 11px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.footer-link {
+  color: #00ff88;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-block;
+}
+
+.footer-link:hover {
+  border-color: #00ff88;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+  transform: translateY(-2px);
+}
+
+.footer-link-button {
+  background: #00ff88;
+  color: #000;
+  font-weight: bold;
+  border: 2px solid #00ff88;
+}
+
+.footer-link-button:hover {
+  background: #00cc6f;
+  border-color: #00cc6f;
+}
+
+/* Modal Styles - Dryer Project */
+.dryer-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.dryer-modal-content {
+  background: linear-gradient(135deg, #1a3a1a 0%, #0a1a0a 100%);
+  border: 3px solid #00ff88;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.dryer-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #00ff88;
+  font-size: 32px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-family: inherit;
+}
+
+.dryer-modal-close:hover {
+  background: rgba(0, 255, 136, 0.2);
+  transform: rotate(90deg);
+}
+
+.dryer-modal-title {
+  color: #00ff88;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.dryer-modal-subtitle {
+  color: #888;
+  font-size: 12px;
+  text-align: center;
+  margin-bottom: 30px;
+  font-style: italic;
+}
+
+/* Form Styles - Dryer Project */
+.dryer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dryer-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dryer-form-group label {
+  font-family: inherit;
+  font-weight: 700;
+  color: #00ff88;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.dryer-form-input,
+.dryer-form-textarea {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: #fff;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.dryer-form-input:focus,
+.dryer-form-textarea:focus {
+  outline: none;
+  border-color: #00ff88;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.dryer-form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.dryer-form-submit {
+  margin-top: 10px;
+  padding: 14px;
+  background: #00ff88;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.2s;
+  font-family: inherit;
+}
+
+.dryer-form-submit:hover {
+  background: #00cc6f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+}
+
+.dryer-form-submit:disabled {
+  background: #555;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 650px) {
+  .dryer-modal-content {
+    padding: 30px 20px;
+  }
+  
+  .footer-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .footer-link {
+    display: block;
+    margin: 0 auto;
+    max-width: 250px;
+  }
+}
+</style>

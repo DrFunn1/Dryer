@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dryer - Chaotic Percussion Generator | DrFunn</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Physics-based eurorack-style percussion generator. A tennis ball bouncing in a rotating dryer drum creates chaotic MIDI rhythms. Web Audio + Web MIDI support.">
+    <meta name="keywords" content="eurorack, percussion generator, MIDI, Web Audio, physics simulation, music production, DrFunn">
+    <meta name="author" content="Edward - DrFunn">
+    
+    <!-- Open Graph Meta Tags (Facebook, LinkedIn, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://drfunn.com/dryer">
+    <meta property="og:title" content="Dryer - Chaotic Percussion Generator">
+    <meta property="og:description" content="Physics-based eurorack-style percussion generator. A tennis ball in a rotating dryer drum creates chaotic MIDI rhythms.">
+    <meta property="og:image" content="https://drfunn.com/dryer/Dryer-20260226.png">
+    <meta property="og:image:width" content="485">
+    <meta property="og:image:height" content="995">
+    <meta property="og:image:alt" content="Dryer percussion generator interface">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://drfunn.com/dryer">
+    <meta name="twitter:title" content="Dryer - Chaotic Percussion Generator">
+    <meta name="twitter:description" content="Physics-based eurorack percussion generator. Tennis ball + rotating drum = chaotic MIDI rhythms.">
+    <meta name="twitter:image" content="https://drfunn.com/dryer/Dryer-20260226.png">
+    <meta name="twitter:image:alt" content="Dryer percussion generator interface">
+
+  
+  <link rel="stylesheet" href="dryer-styles.css">
+  <link rel="icon" href="common/drfunn-favicon.png" type="image/png">
+
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://drfunn.com/dryer">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .eurorack-module {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            width: 600px;
+        }
+
+        .module-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .module-title {
+            color: #00ff88;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .module-subtitle {
+            color: #888;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Dryer Drum Display */
+        .dryer-display {
+            background: radial-gradient(circle, #e8e4d8 0%, #c8c4b8 60%, #a8a498 100%);
+            border: 8px solid #4a4a4a;
+            border-radius: 50%;
+            width: 350px;
+            height: 350px;
+            margin: 0 auto 30px;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .dryer-window {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: #000;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        #dryerCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Control Section */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            text-align: center;
+        }
+
+        .control-label {
+            color: #00ff88;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .knob-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 8px;
+        }
+
+        .knob {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, #555, #222);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.05s;
+        }
+
+        .knob:active {
+            transform: scale(0.98);
+        }
+
+        .knob-indicator {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            width: 3px;
+            height: 30px;
+            background: #00ff88;
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+            box-shadow: 0 0 5px rgba(0, 255, 136, 0.8);
+        }
+
+        .value-display {
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        /* Transport Controls */
+        .transport {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .transport-btn {
+            background: #333;
+            border: 2px solid #555;
+            color: #00ff88;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+
+        .transport-btn:hover {
+            background: #444;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .transport-btn.active {
+            background: #00ff88;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+        }
+
+        /* MIDI Status */
+        .midi-status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .midi-status-text {
+            color: #888;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .midi-status.connected .midi-status-text {
+            color: #00ff88;
+        }
+
+        /* Info panel */
+        /* WebMIDI Help Accordion */
+        .midi-help {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .midi-help-intro {
+            padding: 12px 15px;
+            color: #888;
+            font-size: 11px;
+            line-height: 1.6;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .midi-help details {
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .midi-help details:last-child {
+            border-bottom: none;
+        }
+
+        .midi-help summary {
+            padding: 10px 15px;
+            color: #00ff88;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .midi-help summary::-webkit-details-marker { display: none; }
+
+        .midi-help summary::after {
+            content: '▸';
+            color: #555;
+            font-size: 12px;
+        }
+
+        .midi-help details[open] summary::after {
+            content: '▾';
+            color: #00ff88;
+        }
+
+        .midi-help summary:hover {
+            background: rgba(0, 255, 136, 0.04);
+        }
+
+        .midi-help-content {
+            padding: 4px 15px 14px 15px;
+        }
+
+        .midi-help-content ol {
+            color: #888;
+            font-size: 11px;
+            line-height: 1.7;
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .midi-help-content li {
+            margin-bottom: 9px;
+        }
+
+        .midi-help-content li strong {
+            color: #aaa;
+            display: block;
+            margin-bottom: 1px;
+        }
+
+        .midi-help-content a {
+            color: #00ff88;
+            text-decoration: none;
+        }
+
+        .midi-help-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Feature Controls */
+        .feature-controls {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+
+        .feature-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-row-toggles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .feature-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .feature-label {
+            color: #00ff88;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .feature-select {
+            background: #333;
+            border: 2px solid #555;
+            color: #00ff88;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .feature-select:hover,
+        .feature-select:focus {
+            border-color: #00ff88;
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .feature-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #00ff88;
+        }
+
+        .feature-hint {
+            color: #666;
+            font-size: 9px;
+            font-style: italic;
+            margin-left: 26px;
+        }
+
+        /* Responsive */
+        @media (max-width: 650px) {
+            .eurorack-module {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .dryer-display {
+                width: 280px;
+                height: 280px;
+            }
+
+            .dryer-window {
+                width: 240px;
+                height: 240px;
+            }
+
+            .controls {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="eurorack-module">
+            <div class="module-header">
+                <div class="module-title">Dryer</div>
+                <div class="module-subtitle">Chaotic Percussion Generator</div>
+            </div>
+
+            <div class="dryer-display">
+                <div class="dryer-window">
+                    <canvas id="dryerCanvas" width="300" height="300"></canvas>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <div class="control-label">RPM</div>
+                    <div class="knob-container">
+                        <div class="knob" id="rpmKnob">
+                            <div class="knob-indicator"></div>
+                        </div>
+                    </div>
+                    <div class="value-display" id="rpmValue">20</div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Drum Size (cm)</div>
+                    <div class="knob-container">
+                        <div class="knob" id="drumSizeKnob">
+                            <div class="knob-indicator"></div>
+                        </div>
+                    </div>
+                    <div class="value-display" id="drumSizeValue">80</div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Vanes</div>
+                    <div class="knob-container">
+                        <div class="knob" id="vanesKnob">
+                            <div class="knob-indicator"></div>
+                        </div>
+                    </div>
+                    <div class="value-display" id="vanesValue">5</div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Vane Height (%)</div>
+                    <div class="knob-container">
+                        <div class="knob" id="vaneHeightKnob">
+                            <div class="knob-indicator"></div>
+                        </div>
+                    </div>
+                    <div class="value-display" id="vaneHeightValue">30</div>
+                </div>
+            </div>
+
+            <div class="transport">
+                <button class="transport-btn" id="startBtn">Start</button>
+                <button class="transport-btn" id="stopBtn">Stop</button>
+            </div>
+
+            <!-- Feature Controls -->
+            <div class="feature-controls">
+
+                <!-- Dropdowns: Scale and Ball Type (→ touch display menu items) -->
+                <div class="feature-row">
+                    <div class="feature-group">
+                        <label class="feature-label">Scale</label>
+                        <select id="scaleSelect" class="feature-select">
+                            <!-- populated by dryer-main.js from DRYER_SCALES -->
+                        </select>
+                    </div>
+
+                    <div class="feature-group">
+                        <label class="feature-label">Ball Type</label>
+                        <select id="ballTypeSelect" class="feature-select">
+                            <option value="tennis">Tennis Ball</option>
+                            <option value="sandbag">Sandbag</option>
+                            <option value="balloon">Balloon</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Toggles: front-panel switches -->
+                <div class="feature-row-toggles">
+                    <div class="feature-group">
+                        <label class="feature-label">
+                            <input type="checkbox" id="lintTrapToggle" class="feature-checkbox">
+                            Lint Trap
+                        </label>
+                        <div class="feature-hint">Filter low-velocity hits</div>
+                    </div>
+
+                    <div class="feature-group">
+                        <label class="feature-label">
+                            <input type="checkbox" id="moonGravityToggle" class="feature-checkbox">
+                            Moon Gravity
+                        </label>
+                        <div class="feature-hint">1/6th Earth gravity</div>
+                    </div>
+
+                    <div class="feature-group">
+                        <label class="feature-label">
+                            <input type="checkbox" id="scatterToggle" class="feature-checkbox">
+                            Scatter
+                        </label>
+                        <div class="feature-hint">Shuffle notes across surfaces</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="midi-status" id="midiStatus">
+                <div class="midi-status-text">MIDI: Web Audio (Click to enable MIDI Out)</div>
+            </div>
+
+            <div class="midi-help">
+                <div class="midi-help-intro">
+                    Dryer can send WebMIDI to your softsynth, DAW, or hardware interface.
+                    A virtual MIDI cable is required — expand your OS below for setup instructions.
+                    Problems? Contact me via the footer.
+                </div>
+
+                <details>
+                    <summary>Windows</summary>
+                    <div class="midi-help-content">
+                        <ol>
+                            <li>
+                                <strong>Install loopMIDI</strong>
+                                Download and launch loopMIDI from <a href="https://www.tobias-erichsen.de/software/loopmidi.html" target="_blank" rel="noopener">tobias-erichsen.de</a>.
+                                In the loopMIDI window click <b>+</b> to create a new port — name it something clear like <em>WebMIDI to Windows</em>.
+                                Leave loopMIDI running in the system tray; the port only exists while it's running.
+                            </li>
+                            <li>
+                                <strong>Connect Dryer to the port</strong>
+                                Open Dryer in Chrome (required for WebMIDI). Click the MIDI status bar at the bottom of the module and select your loopMIDI port.
+                                If the port isn't listed, refresh the page and try again.
+                            </li>
+                            <li>
+                                <strong>Route to your DAW or softsynth</strong>
+                                Your Windows apps should now see the loopMIDI device. Configure your DAW or synth to receive MIDI input from it — typically via Preferences › MIDI Inputs.
+                            </li>
+                            <li><strong>Have Funn!</strong></li>
+                        </ol>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Mac</summary>
+                    <div class="midi-help-content">
+                        <ol>
+                            <li>
+                                <strong>Create a virtual port via IAC Driver</strong>
+                                Open <em>Applications › Utilities › Audio MIDI Setup</em>.
+                                From the menu choose <em>Window › Show MIDI Studio</em>.
+                                Double-click the <b>IAC Driver</b> icon, check <b>Device is online</b>, then click <b>+</b> in the Ports area to add a bus — name it something like <em>WebMIDI to MAC</em>.
+                                This bus is now a virtual MIDI cable available system-wide.
+                            </li>
+                            <li>
+                                <strong>Connect Dryer to the port</strong>
+                                Open Dryer in Chrome (required for WebMIDI). Click the MIDI status bar at the bottom of the module and select your IAC port.
+                                If the port isn't listed, refresh the page and try again.
+                            </li>
+                            <li>
+                                <strong>Route to your DAW or softsynth</strong>
+                                Your Mac apps should now see the IAC device. Configure your DAW or synth to receive MIDI input from it — typically via Preferences › MIDI Inputs.
+                            </li>
+                            <li><strong>Have Funn!</strong></li>
+                        </ol>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="dryer-physics.js"></script>
+    <script src="dryer-audio.js"></script>
+    <script src="dryer-ui.js"></script>
+    <script src="dryer-main.js"></script>
+    
+    <script>
+        // Load footer and initialize feedback modal
+        fetch('./footer-dryer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+                
+                // Initialize feedback modal
+                const feedbackButton = document.getElementById('dryer-feedback-button');
+                const modal = document.getElementById('dryer-feedback-modal');
+                const closeButton = document.getElementById('close-dryer-modal');
+                const form = document.getElementById('dryer-feedback-form');
+                const formStatus = document.getElementById('dryer-form-status');
+                
+                if (feedbackButton && modal && closeButton && form) {
+                    // Open modal
+                    feedbackButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        modal.style.display = 'flex';
+                    });
+                    
+                    // Close modal - X button
+                    closeButton.addEventListener('click', function() {
+                        modal.style.display = 'none';
+                        form.reset();
+                        formStatus.style.display = 'none';
+                    });
+                    
+                    // Close modal - click outside
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            modal.style.display = 'none';
+                            form.reset();
+                            formStatus.style.display = 'none';
+                        }
+                    });
+                    
+                    // Close modal - Escape key
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape' && modal.style.display === 'flex') {
+                            modal.style.display = 'none';
+                            form.reset();
+                            formStatus.style.display = 'none';
+                        }
+                    });
+                    
+                    // Handle form submission with AJAX
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        const formData = new FormData(form);
+                        const submitButton = form.querySelector('button[type="submit"]');
+                        
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Sending...';
+                        formStatus.style.display = 'none';
+                        
+                        fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                formStatus.style.display = 'block';
+                                formStatus.style.backgroundColor = '#00ff88';
+                                formStatus.style.color = '#000';
+                                formStatus.textContent = '✓ Thank you! Your feedback has been sent successfully.';
+                                form.reset();
+                                
+                                setTimeout(function() {
+                                    modal.style.display = 'none';
+                                    formStatus.style.display = 'none';
+                                }, 2000);
+                            } else {
+                                throw new Error('Form submission failed');
+                            }
+                        })
+                        .catch(error => {
+                            formStatus.style.display = 'block';
+                            formStatus.style.backgroundColor = '#ff6b6b';
+                            formStatus.style.color = '#fff';
+                            formStatus.textContent = 'Oops! There was a problem. Please try again.';
+                        })
+                        .finally(() => {
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Send Feedback';
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading footer:', error);
+            });
+    </script>
+</body>
+</html>
