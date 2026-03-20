@@ -1,0 +1,20 @@
+{
+  "slug": "Dryer",
+  "name": "Dryer",
+  "version": "2.0.0",
+  "license": "GPL-3.0-or-later",
+  "brand": "DrFunn",
+  "author": "Ed Morra",
+  "authorEmail": "ed@drfunn.com",
+  "authorUrl": "https://drfunn.com",
+  "pluginUrl": "https://github.com/DrFunn1/Dryer",
+  "sourceUrl": "https://github.com/DrFunn1/Dryer",
+  "modules": [
+    {
+      "slug": "Dryer",
+      "name": "Dryer",
+      "description": "Physics-based chaotic percussion and CV generator — ball bouncing in a rotating drum",
+      "tags": ["Clock modulator", "Sequencer", "Random", "Polyphonic"]
+    }
+  ]
+}

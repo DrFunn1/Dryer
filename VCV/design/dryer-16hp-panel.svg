@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="81.28mm" height="128.5mm" viewBox="0 0 81.28 128.5" 
+     xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- Panel background -->
+  <rect width="81.28" height="128.5" fill="#2a2a2a" stroke="#000" stroke-width="0.5"/>
+  
+  <!-- Mounting holes (3.2mm diameter, 3mm from edges) -->
+  <circle cx="7.5" cy="3" r="1.6" fill="none" stroke="#00ff88" stroke-width="0.2"/>
+  <circle cx="81.28" cy="3" r="1.6" transform="translate(-7.5, 0)" fill="none" stroke="#00ff88" stroke-width="0.2"/>
+  <circle cx="7.5" cy="128.5" r="1.6" transform="translate(0, -3)" fill="none" stroke="#00ff88" stroke-width="0.2"/>
+  <circle cx="81.28" cy="128.5" r="1.6" transform="translate(-7.5, -3)" fill="none" stroke="#00ff88" stroke-width="0.2"/>
+  
+  <!-- Title text -->
+  <text x="40.64" y="123" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="6" font-weight="bold" fill="#00ff88" letter-spacing="1.5">DRYER</text>
+  
+  <!-- TOP ROW: Output jacks at Y=110mm from bottom = 18.5mm from top -->
+  <!-- Trigger Out -->
+  <circle cx="25" cy="18.5" r="3" fill="none" stroke="#ff6b6b" stroke-width="0.3"/>
+  <text x="25" y="14" text-anchor="middle" font-family="Arial" font-size="3" fill="#888">TRIG</text>
+  
+  <!-- CV Out -->
+  <circle cx="40.64" cy="18.5" r="3" fill="none" stroke="#4ecdc4" stroke-width="0.3"/>
+  <text x="40.64" y="14" text-anchor="middle" font-family="Arial" font-size="3" fill="#888">CV</text>
+  
+  <!-- MIDI Out -->
+  <circle cx="56.28" cy="18.5" r="3" fill="none" stroke="#ffe66d" stroke-width="0.3"/>
+  <text x="56.28" y="14" text-anchor="middle" font-family="Arial" font-size="3" fill="#888">MIDI</text>
+  
+  <!-- BUTTONS at Y=98mm from bottom = 30.5mm from top -->
+  <!-- Moon Gravity (left) -->
+  <circle cx="12" cy="30.5" r="3" fill="none" stroke="#a8e6cf" stroke-width="0.3"/>
+  <circle cx="12" cy="25" r="1.5" fill="none" stroke="#a8e6cf" stroke-width="0.2"/>
+  <text x="12" y="40" text-anchor="middle" font-family="Arial" font-size="2.5" fill="#888">MOON</text>
+  
+  <!-- Lint Trap (right) -->
+  <circle cx="69.28" cy="30.5" r="3" fill="none" stroke="#ffd3b6" stroke-width="0.3"/>
+  <circle cx="69.28" cy="25" r="1.5" fill="none" stroke="#ffd3b6" stroke-width="0.2"/>
+  <text x="69.28" y="40" text-anchor="middle" font-family="Arial" font-size="2.5" fill="#888">LINT</text>
+  
+  <!-- CENTER DISPLAY at Y=74mm from bottom = 54.5mm from top -->
+  <!-- 1.46" = 37.084mm diameter -->
+  <circle cx="40.64" cy="54.5" r="18.542" fill="none" stroke="#00ff88" stroke-width="0.5"/>
+  <text x="40.64" y="50" text-anchor="middle" font-family="Arial" font-size="3" fill="#666">1.46" DISPLAY</text>
+  
+  <!-- POTENTIOMETERS at Y=52mm from bottom = 76.5mm from top -->
+  <!-- RPM (left of display) -->
+  <circle cx="12" cy="76.5" r="3.5" fill="none" stroke="#00ff88" stroke-width="0.3"/>
+  <text x="12" y="85" text-anchor="middle" font-family="Arial" font-size="3" fill="#888">RPM</text>
+  
+  <!-- SIZE (right of display) -->
+  <circle cx="69.28" cy="76.5" r="3.5" fill="none" stroke="#00ff88" stroke-width="0.3"/>
+  <text x="69.28" y="85" text-anchor="middle" font-family="Arial" font-size="3" fill="#888">SIZE</text>
+  
+  <!-- VANES (lower left) -->
+  <circle cx="25" cy="76.5" r="3.5" fill="none" stroke="#00ff88" stroke-width="0.3"/>
+  <text x="25" y="85" text-anchor="middle" font-family="Arial" font-size="3" fill="#888">VANES</text>
+  
+  <!-- HEIGHT (lower right) -->
+  <circle cx="56.28" cy="76.5" r="3.5" fill="none" stroke="#00ff88" stroke-width="0.3"/>
+  <text x="56.28" y="85" text-anchor="middle" font-family="Arial" font-size="3" fill="#888">HEIGHT</text>
+  
+  <!-- CV INPUT JACKS at Y=34mm from bottom = 94.5mm from top (18mm below pots) -->
+  <!-- RPM CV -->
+  <circle cx="12" cy="94.5" r="3" fill="none" stroke="#4ecdc4" stroke-width="0.3"/>
+  <text x="12" y="103" text-anchor="middle" font-family="Arial" font-size="2.5" fill="#666">CV</text>
+  
+  <!-- SIZE CV -->
+  <circle cx="69.28" cy="94.5" r="3" fill="none" stroke="#4ecdc4" stroke-width="0.3"/>
+  <text x="69.28" y="103" text-anchor="middle" font-family="Arial" font-size="2.5" fill="#666">CV</text>
+  
+  <!-- VANES CV -->
+  <circle cx="25" cy="94.5" r="3" fill="none" stroke="#4ecdc4" stroke-width="0.3"/>
+  <text x="25" y="103" text-anchor="middle" font-family="Arial" font-size="2.5" fill="#666">CV</text>
+  
+  <!-- HEIGHT CV -->
+  <circle cx="56.28" cy="94.5" r="3" fill="none" stroke="#4ecdc4" stroke-width="0.3"/>
+  <text x="56.28" y="103" text-anchor="middle" font-family="Arial" font-size="2.5" fill="#666">CV</text>
+  
+  <!-- Reference grid (for design purposes - comment out for final) -->
+  <!--
+  <line x1="0" y1="18.5" x2="81.28" y2="18.5" stroke="#ff00ff" stroke-width="0.1" opacity="0.3"/>
+  <line x1="0" y1="30.5" x2="81.28" y2="30.5" stroke="#ff00ff" stroke-width="0.1" opacity="0.3"/>
+  <line x1="0" y1="54.5" x2="81.28" y2="54.5" stroke="#ff00ff" stroke-width="0.1" opacity="0.3"/>
+  <line x1="0" y1="76.5" x2="81.28" y2="76.5" stroke="#ff00ff" stroke-width="0.1" opacity="0.3"/>
+  <line x1="0" y1="94.5" x2="81.28" y2="94.5" stroke="#ff00ff" stroke-width="0.1" opacity="0.3"/>
+  <line x1="40.64" y1="0" x2="40.64" y2="128.5" stroke="#ff00ff" stroke-width="0.1" opacity="0.3"/>
+  -->
+  
+</svg>
