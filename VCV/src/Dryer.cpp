@@ -127,6 +127,9 @@ struct DryerModule : Module {
     // CC override (-1 = inactive)
     float ccSpeed = -1.f, ccSize = -1.f, ccNumber = -1.f, ccHeight = -1.f;
 
+    // Debug logging throttle (~1 log line per second)
+    int debugFrameCount = 0;
+
     DryerModule() {
         config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 
@@ -137,7 +140,9 @@ struct DryerModule : Module {
         configSwitch(PARAM_MOON, 0.f, 1.f, 0.f, "Moon Gravity", {"Earth", "Moon"});
         configSwitch(PARAM_LINT, 0.f, 1.f, 0.f, "Lint Trap",    {"Off",   "On"});
 
-        // Snap vane count and height to integers
+        // Snap all four knobs to integers (detented dryer-style; speed 0 = off)
+        getParamQuantity(PARAM_SPEED)->snapEnabled  = true;
+        getParamQuantity(PARAM_SIZE)->snapEnabled   = true;
         getParamQuantity(PARAM_NUMBER)->snapEnabled = true;
         getParamQuantity(PARAM_HEIGHT)->snapEnabled = true;
 
@@ -194,6 +199,21 @@ struct DryerModule : Module {
 
         const bool moonOn = params[PARAM_MOON].getValue() > 0.5f;
         const bool lintOn = params[PARAM_LINT].getValue() > 0.5f;
+
+        // --- Debug logging: ~1 line/sec ---
+        if (++debugFrameCount >= (int)args.sampleRate) {
+            debugFrameCount = 0;
+            float cvS = inputs[INPUT_SPEED_CV].isConnected()  ? inputs[INPUT_SPEED_CV].getVoltage()  : 0.f;
+            float cvSz= inputs[INPUT_SIZE_CV].isConnected()   ? inputs[INPUT_SIZE_CV].getVoltage()   : 0.f;
+            float cvN = inputs[INPUT_NUMBER_CV].isConnected() ? inputs[INPUT_NUMBER_CV].getVoltage() : 0.f;
+            float cvH = inputs[INPUT_HEIGHT_CV].isConnected() ? inputs[INPUT_HEIGHT_CV].getVoltage() : 0.f;
+            DEBUG("DRYER speed=%4.1f(knob+cv=%.2fV)->%d  size=%4.1f(cv=%.2fV)->%d  number=%.2f(cv=%.2fV)->%d  height=%.2f(cv=%.2fV)->%d  surfs=%d",
+                speed,  cvS,  (int)roundf(speed),
+                size,   cvSz, (int)roundf(size),
+                number, cvN,  (int)roundf(number),
+                height, cvH,  (int)roundf(height),
+                physics.surfaceCount);
+        }
 
         physics.setParameters(speed, size, (int)roundf(number), (float)roundf(height));
         physics.moonGravity = moonOn;
@@ -328,7 +348,7 @@ struct DryerWidget : ModuleWidget {
         addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.f, 18.5f)), module, DryerModule::OUTPUT_CLK));
         addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(33.f, 18.5f)), module, DryerModule::OUTPUT_TRG));
         addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(48.f, 18.5f)), module, DryerModule::OUTPUT_CV));
-        addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(63.f, 18.5f)), module, DryerModule::OUTPUT_POLY));
+        // OUTPUT_POLY: no VCV port widget — shown as USB-B artwork on panel SVG only
 
         // --- Jack labels (Y=12.5mm) ---
         NVGcolor labelColor = nvgRGB(0xaa, 0xaa, 0xaa);
@@ -378,9 +398,9 @@ struct DryerWidget : ModuleWidget {
         addChild(panelText(17.5f, 109.f, "DRUM",  greenColor, 10.f));
         addChild(panelText(63.5f, 109.f, "VANES", greenColor, 10.f));
 
-        // Title (Y=120.5mm)
-        addChild(panelText(40.64f, 120.5f, "DRYER",  greenColor,          14.f));
-        addChild(panelText(40.64f, 125.f,  "DRFUNN", nvgRGB(0x44,0x44,0x44), 7.f));
+        // Title — top of panel (SVG text ignored by VCV; C++ widget is what renders)
+        addChild(panelText(40.64f,  7.0f, "DRYER",  greenColor,             9.f));
+        addChild(panelText(40.64f, 124.f, "DRFUNN", nvgRGB(0x44,0x44,0x44), 7.f));
     }
 
     void appendContextMenu(Menu* menu) override {
